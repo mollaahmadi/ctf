@@ -1,0 +1,23 @@
+name: Inspect CTF API
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ctf-inspector
+  cancel-in-progress: false
+jobs:
+  inspect:
+    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, Linux, ctf]
+    timeout-minutes: 3
+    steps:
+      - name: Check out requested commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Inspect challenge endpoint
+        shell: bash
+        run: |
+          python3 --version
+          python3 inspect_api.py --timeout 20 --max-bytes 1048576
